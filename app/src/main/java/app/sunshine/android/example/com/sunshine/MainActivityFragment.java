@@ -1,5 +1,6 @@
 package app.sunshine.android.example.com.sunshine;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,7 +76,9 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String forecast = forecastAdapter.getItem(position);
-                Toast.makeText(getActivity(), forecast, Toast.LENGTH_SHORT).show();
+                Intent detailActivity = new Intent(getActivity(), DetailActivity.class);
+                detailActivity.putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(detailActivity);
             }
         });
 
@@ -92,7 +94,7 @@ public class MainActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("94043");
+            new FetchWeatherTask().execute("Joinville");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -126,7 +128,7 @@ public class MainActivityFragment extends Fragment {
                         .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
                         .build();
 
-                URL url = new URL(buildUri.toString());
+                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=Joinville&mode=json&units=metric&cnt=7");
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
