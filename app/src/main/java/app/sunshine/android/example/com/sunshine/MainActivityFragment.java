@@ -37,6 +37,7 @@ import java.util.Locale;
 public class MainActivityFragment extends Fragment {
 
     private ArrayAdapter<String> forecastAdapter;
+    private String temperatureUnit;
 
     public MainActivityFragment() {
     }
@@ -71,7 +72,14 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+        updateTemperatureUnit();
+
         return rootView;
+    }
+
+    private void updateTemperatureUnit() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        temperatureUnit = prefs.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_default));
     }
 
     @Override
@@ -198,10 +206,17 @@ public class MainActivityFragment extends Fragment {
         }
 
         private String formatHighLows(double high, double low) {
-            long roundedHigh = Math.round(high);
-            long roundedLow = Math.round(low);
+            long formatedHigh = formatTemperature(high);
+            long formatedLow = formatTemperature(low);
 
-            return roundedHigh + "/" + roundedLow;
+            return formatedHigh + "/" + formatedLow;
+        }
+
+        private long formatTemperature(double temp) {
+            if (temperatureUnit.equals(getString(R.string.pref_units_imperial_value))) {
+                temp = temp * 1.8 + 32;
+            }
+            return Math.round(temp);
         }
 
         private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
@@ -217,6 +232,8 @@ public class MainActivityFragment extends Fragment {
 
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
             JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
+
+            updateTemperatureUnit();
 
             // OWM returns daily forecasts based upon the local time of the city that is being
             // asked for, which means that we need to know the GMT offset to translate this data
