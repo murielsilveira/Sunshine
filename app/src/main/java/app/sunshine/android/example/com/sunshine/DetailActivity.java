@@ -93,7 +93,7 @@ public class DetailActivity extends AppCompatActivity {
 
         private Intent createShareIntent() {
             return new Intent(Intent.ACTION_SEND)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .setType("text/plain")
                     .putExtra(Intent.EXTRA_TEXT, forecast + FORECAST_SHARE_HASHTAG);
         }
