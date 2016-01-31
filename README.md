@@ -2,5 +2,5 @@
 
 **~/.gradle/gradle.properties**
 ```
-MyOpenWeatherMapApiKey=youropenweathermapapikey
+MyOpenWeatherMapApiKey="youropenweathermapapikey"
 ```
